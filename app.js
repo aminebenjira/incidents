@@ -29,12 +29,13 @@ let incidentRoute = require("./routes/incidentRoute")
 // body parser middelware
 app.use(bodyParser.json());
 
-app.use("/service", serviceRoute)
-app.use("/incident", incidentRoute)
+app.use("/api/services", serviceRoute)
+app.use("/api/incidents", incidentRoute)
 
 
 app.use((req, res, next) => {
-    return next(ErrorResponse(404))
+    return res.status(404).send("not found")
+    // return next(ErrorResponse(404))
 })
 
 app.use((err, req, res , next) => {
