@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="./tailwind.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+
+  </head>
+  <body>
+    <div class="container mx-auto flex flex-col justify-center items-center w-screen h-screen">
+      <div class="flex">
+        <div class="flex flex-col justify-center items-center pt-10 pb-10">
+
+            <i class="fas fa-do-not-enter text-red-500 text-8xl"></i>
+               <p class="text-xl ">Some services are down</p>
+        </div>
+      </div>
+
+      <div class=" shadow-lg rounded-lg	">
+          <div class="flex justify-between rounded-t-lg	 border-b p-3 bg-gray-100">
+            <p>Current status by service</p>
+
+            <div>
+                <i class="fas fa-do-not-enter"></i> DownTime
+            </div>
+          </div>
+        <div id="services_status"  class="p-2">
+
+          </div>
+      </div>
+
+    </div>
+  </body>
+
+  <script>
+
+
+let servicesCount=5;
+let incidentCount=99;
+let html="";
+
+for (let i = 0; i < servicesCount; i++) {
+
+    html+= '<div class="p-2"><i class="rounded-full bg-green-400 p-1 text-white  text-xs fas fa-check"></i> Service name</div> ';
+   html+= "<div class='flex'>" ;
+
+for (let j = 0; j < incidentCount; j++) {
+    if(j%10==0)
+    html+="<div class=' rounded-xl w-1 h-6 bg-gray-200 m-0.5'></div>"
+
+    else if(j%2==0)
+    html+="<div class=' rounded-xl w-1 h-6 bg-green-500 m-0.5'></div>"
+    else
+    html+="<div class=' rounded-xl w-1 h-6 bg-red-500 m-0.5'></div>"
+}
+html+="</div>" ;
+
+}
+
+let services_status=document.getElementById("services_status");
+services_status.innerHTML=html;
+
+
+
+
+  </script>
+</html>
