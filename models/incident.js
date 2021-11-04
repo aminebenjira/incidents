@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const schema = new mongoose.Schema(
   {
-
+    service: {
+      type: String,
+      required: true
+    },
     status: {
       type: Number,
       required: true

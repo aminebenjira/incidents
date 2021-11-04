@@ -1,3 +1,10 @@
+
+const fs = require('fs')
+const { promisify } = require('util')
+
+const readFileAsync = promisify(fs.readFile)
+const writeFileAsync = promisify(fs.writeFile)
+
 const serviceModel = require("../models/service")
 module.exports = {
 
@@ -20,9 +27,23 @@ module.exports = {
             }
 
              let service = req.body
+            
 
-             let data = await serviceModel.create(service)
-             res.status(201).json(data)
+             let serviceFiles = await readFileAsync("./db/service.json")
+             let data = JSON.parse(serviceFiles).data
+             let serviceFound = data.find(serviceItem =>serviceItem.name===service.name);
+             if(!serviceFound){
+                data.push(service)
+                await writeFileAsync("./db/service.json",JSON.stringify({data:data}))
+                return res.status(200).json(service)
+             }
+             return next({
+                 "message":"the service with the name " +service.name + "Already found",
+                 "status": 409
+             })
+
+             //let data = await serviceModel.create(service)
+             //res.status(201).json(data)
 
          }catch(err){
             return next(err)
@@ -37,10 +58,32 @@ module.exports = {
 
                 let service = req.body
 
-                let data = await serviceModel.find()
+                //let data = await serviceModel.find()
+
+                let serviceFiles = await readFileAsync("./db/service.json")
+                let data = JSON.parse(serviceFiles).data
                 res.status(200).json(data)
 
             }catch(err){
+               return next(err)
+           }
+       },
+
+       getServiceById: async(req, res, next)=> {
+           try {
+              let serviceName = req.params.name
+              let serviceFile = await readFileAsync("./db/service.json")
+              let data = JSON.parse(serviceFile).data
+              let serviceFound = data.find(serviceItem =>serviceItem.name===serviceName);
+              if(serviceFound){
+                  return res.status(201).json(serviceFound)
+              }
+              return next({
+                  "status": 404,
+                  "message": "No service found with the name " + serviceName
+              })
+
+           }catch(err){
                return next(err)
            }
        },

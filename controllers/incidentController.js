@@ -1,5 +1,10 @@
 const incidentModel = require("../models/incident")
 const serviceModel = require("../models/service")
+const fs = require('fs')
+const { promisify } = require('util')
+
+const readFileAsync = promisify(fs.readFile)
+const writeFileAsync = promisify(fs.writeFile)
 module.exports = {
 
     //this methode is used to create a service
@@ -27,28 +32,29 @@ module.exports = {
 
              let incident = req.body;
 
+             let incidentFiles = await readFileAsync("./db/incident.json")
+             let serviceFiles = await readFileAsync("./db/service.json")
+             
+             let serviceData = JSON.parse(serviceFiles).data
+             let incidentData = JSON.parse(incidentFiles).data
 
-
-             let service = await serviceModel.findOne({name: incident.service})
-             if(!service){
-                 return next({
-                     status: 404,
-                     message: "no service found with the given service name"
-                 })
+             let serviceIndex = serviceData.findIndex(item => item.name===incident.service)
+             console.log(serviceData[serviceIndex])
+             if(serviceIndex!==-1){
+                 if(!serviceData[serviceIndex].incidents){
+                    serviceData[serviceIndex].incidents = []
+                 }
+                 serviceData[serviceIndex].incidents.push(incident)
+                 serviceData.splice(serviceIndex,1, serviceData[serviceIndex])
+                 incidentData.push(incident)
+                 await writeFileAsync("./db/service.json",JSON.stringify({data:serviceData}))
+                 await writeFileAsync("./db/incident.json",JSON.stringify({data:incidentData}))
+                 return res.status(200).json(incident)
              }
-
-             //we don't need to add service name again
-             if(incident.service)
-             delete incident["service"];
-
-             let data = await incidentModel.create(incident);
-
-
-             //push the incident in the service array incidents
-             service.incidents.push(data)
-             await service.save()
-             console.log(service)
-             res.status(201).json(data)
+             return next({
+                 "status":404,
+                 "message":"No service found for the incident"
+             })
 
          }catch(err){
             return next(err)
