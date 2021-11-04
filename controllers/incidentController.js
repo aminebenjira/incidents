@@ -1,5 +1,5 @@
-const incidentModel = require("../models/incident")
-const serviceModel = require("../models/service")
+// const incidentModel = require("../models/incident")
+// const serviceModel = require("../models/service")
 const fs = require('fs')
 const { promisify } = require('util')
 
@@ -20,7 +20,7 @@ module.exports = {
                 errors.push("No name specified");
             }
             if (!req.body.status){
-                errors.push("No display name specified");
+                errors.push("No service status specified");
             }
             if (!req.body.description){
                 errors.push("No description specified");
@@ -31,17 +31,17 @@ module.exports = {
             }
 
             if (errors.length){
-                res.status(400).json({"error":errors.join(",")});
-                return err.message;
+                return res.status(400).json({"error":errors.join(",")});
+
             }
 
              let incident = req.body;
-             
+
 
 
              let incidentFiles = await readFileAsync("./db/incident.json")
              let serviceFiles = await readFileAsync("./db/service.json")
-             
+
              let serviceData = JSON.parse(serviceFiles).data
              let incidentData = JSON.parse(incidentFiles).data
 
@@ -52,7 +52,7 @@ module.exports = {
                     serviceData[serviceIndex].incidents = []
                  }
                  incident.id = uuidv4();
-                 const newIncident = Object.assign({}, incident) 
+                 const newIncident = Object.assign({}, incident)
                  delete newIncident["service"]
                  serviceData[serviceIndex].incidents.push(newIncident)
                  serviceData.splice(serviceIndex,1, serviceData[serviceIndex])
@@ -98,7 +98,7 @@ module.exports = {
 
         }catch(err){
             return next(err)
-    
-        }   
+
+        }
      }
 }

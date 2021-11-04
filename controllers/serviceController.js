@@ -24,13 +24,11 @@ module.exports = {
                 errors.push("No description specified");
             }
             if (errors.length){
-                res.status(400).json({"error":errors.join(",")});
-                return err.message;
+                return  res.status(400).json({"error":errors.join(",")});
+
             }
 
              let service = req.body
-            
-
              let serviceFiles = await readFileAsync("./db/service.json")
              let data = JSON.parse(serviceFiles).data
              let serviceFound = data.find(serviceItem =>serviceItem.name===service.name);
@@ -71,8 +69,16 @@ module.exports = {
            }
        },
 
-       getServiceById: async(req, res, next)=> {
+       getServiceByName: async(req, res, next)=> {
            try {
+            var errors=[]
+            if (!req.params.name){
+                errors.push("No name specified");
+            }
+            if(errors.length)
+            return  res.status(400).json({"error":errors.join(",")});
+
+
               let serviceName = req.params.name
               let serviceFile = await readFileAsync("./db/service.json")
               let data = JSON.parse(serviceFile).data
@@ -95,9 +101,14 @@ module.exports = {
             try {
 
 
-                let data = await serviceModel.remove({})
-                res.status(200).json(data)
+                let initialData={
+                    data:[]
+                }
 
+                await writeFileAsync("./db/service.json",JSON.stringify(initialData));
+                await writeFileAsync("./db/incident.json",JSON.stringify(initialData));
+
+                res.status(200).json(initialData.data)
             }catch(err){
                return next(err)
            }

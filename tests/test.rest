@@ -1,11 +1,20 @@
 
 
+
+###Get all services with incidents
+
 GET  http://localhost:3000/api/services/all
 Content-Type: application/json
 
 
-###
 
+### GET service  by name
+
+GET   http://localhost:3000/api/services/webcluster
+
+
+
+### ADD SERVICE
 
 POST http://localhost:3000/api/services/add
 Content-Type: application/json
@@ -17,7 +26,14 @@ Content-Type: application/json
 }
 
 
-###
+### GET All incidents with there service name
+
+
+GET  http://localhost:3000/api/incidents/all
+
+
+
+### ADD INCIDENT to a service
 
 
 POST http://localhost:3000/api/incidents/add
@@ -25,13 +41,13 @@ Content-Type: application/json
 
 {
       "service": "webcluster",
-      "status": 200,
+      "status": 500,
       "description": "Web cluster",
-      "issuedAt": "2021/1/30"
+      "issuedAt": "2021/2/15"
 }
 
-###
+
+
+### delete all services with incidents
 
 DELETE  http://localhost:3000/api/services/remove
-Content-Type: application/json
-

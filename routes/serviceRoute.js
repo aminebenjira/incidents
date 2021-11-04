@@ -6,7 +6,7 @@ var router = express.Router()
 router.post("/add",serviceController.createService)
 
 router.get("/all",serviceController.getServices)
-router.get("/:name", serviceController.getServiceById)
+router.get("/:name", serviceController.getServiceByName)
 
 router.delete("/remove",serviceController.deleteServices)
 module.exports = router

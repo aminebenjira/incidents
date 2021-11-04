@@ -1,26 +1,26 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
 const ErrorResponse = require("http-errors")
 
 
 //connect to database
-mongoose.connect(
-    "mongodb://localhost:27017/testServices",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    },
-    (err) => {
-        if (!err) {
-            console.log('Successfully Established Connection with database')
-        }
-        else {
-            console.log('Failed to Establish Connection with database with Error: '+ err)
-        }
-    }
-  );
+// mongoose.connect(
+//     "mongodb://localhost:27017/testServices",
+//     {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true
+//     },
+//     (err) => {
+//         if (!err) {
+//             console.log('Successfully Established Connection with database')
+//         }
+//         else {
+//             console.log('Failed to Establish Connection with database with Error: '+ err)
+//         }
+//     }
+//   );
 
 let app = express();
 
