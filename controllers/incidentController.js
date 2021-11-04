@@ -52,7 +52,9 @@ module.exports = {
                     serviceData[serviceIndex].incidents = []
                  }
                  incident.id = uuidv4();
-                 serviceData[serviceIndex].incidents.push(incident)
+                 const newIncident = Object.assign({}, incident) 
+                 delete newIncident["service"]
+                 serviceData[serviceIndex].incidents.push(newIncident)
                  serviceData.splice(serviceIndex,1, serviceData[serviceIndex])
                  incidentData.push(incident)
                  await writeFileAsync("./db/service.json",JSON.stringify({data:serviceData}))
