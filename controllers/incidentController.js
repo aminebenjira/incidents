@@ -3,8 +3,13 @@ const serviceModel = require("../models/service")
 const fs = require('fs')
 const { promisify } = require('util')
 
+//to generate random string like ids
+const { v4: uuidv4 } = require('uuid');
+
 const readFileAsync = promisify(fs.readFile)
 const writeFileAsync = promisify(fs.writeFile)
+
+
 module.exports = {
 
     //this methode is used to create a service
@@ -31,6 +36,8 @@ module.exports = {
             }
 
              let incident = req.body;
+             
+
 
              let incidentFiles = await readFileAsync("./db/incident.json")
              let serviceFiles = await readFileAsync("./db/service.json")
@@ -44,6 +51,7 @@ module.exports = {
                  if(!serviceData[serviceIndex].incidents){
                     serviceData[serviceIndex].incidents = []
                  }
+                 incident.id = uuidv4();
                  serviceData[serviceIndex].incidents.push(incident)
                  serviceData.splice(serviceIndex,1, serviceData[serviceIndex])
                  incidentData.push(incident)
@@ -59,5 +67,36 @@ module.exports = {
          }catch(err){
             return next(err)
         }
-    }
+    },
+
+    getIncidents: async(req,res)=>{
+        try{
+
+            let incidentsFiles = await readFileAsync("./db/incident.json")
+            let data = JSON.parse(incidentsFiles).data
+            res.status(200).json(data)
+        }catch(err){
+            return next(err)
+        }
+    },
+
+    getIncidentById: async(req, res, next)=> {
+        try {
+           let id = req.params.id
+           let incidentFile = await readFileAsync("./db/incident.json")
+           let data = JSON.parse(incidentFile).data
+           let incidentFound = data.find(incidentItem =>incidentItem.id===id);
+           if(incidentFound){
+               return res.status(201).json(incidentFound)
+           }
+           return next({
+               "status": 404,
+               "message": "No service found with the id " + id
+           })
+
+        }catch(err){
+            return next(err)
+    
+        }   
+     }
 }
